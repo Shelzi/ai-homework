@@ -1,0 +1,23 @@
+body {
+  min-height: 100vh;
+}
+
+#expenseTable input[type="text"],
+#expenseTable input[type="number"] {
+  text-align: center;
+}
+
+.results {
+  margin-top: 0;
+  font-size: 1.2rem;
+  min-height: 220px;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 0 5px;
+  }
+  .w-100 {
+    max-width: 100% !important;
+  }
+}

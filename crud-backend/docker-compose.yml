@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: jsonplaceholder-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/jsonplaceholder?schema=public
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    command: npm run dev
+
+  db:
+    container_name: jsonplaceholder-db
+    image: postgres:16-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=jsonplaceholder
+    volumes:
+      - jsonplaceholder_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  jsonplaceholder_postgres_data:
+    name: jsonplaceholder_postgres_data 

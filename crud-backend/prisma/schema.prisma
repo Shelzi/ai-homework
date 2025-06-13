@@ -1,0 +1,73 @@
+// This is your Prisma schema file
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  username  String   @unique
+  email     String   @unique
+  phone     String
+  website   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  address   Address?
+  company   Company?
+  auth      Auth?
+
+  @@map("users")
+}
+
+model Address {
+  id       Int    @id @default(autoincrement())
+  street   String
+  suite    String
+  city     String
+  zipcode  String
+  geo      Geo?
+  userId   Int    @unique
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+model Geo {
+  id        Int     @id @default(autoincrement())
+  lat       String
+  lng       String
+  addressId Int     @unique
+  address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+
+  @@map("geo")
+}
+
+model Company {
+  id          Int    @id @default(autoincrement())
+  name        String
+  catchPhrase String
+  bs          String
+  userId      Int    @unique
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("companies")
+}
+
+model Auth {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("auth")
+} 
